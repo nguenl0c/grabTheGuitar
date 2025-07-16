@@ -1,10 +1,10 @@
 // src/api/authApi.js
 import axios from "axios";
 
-// API Configuration với baseURL local
-const API_BASE_URL = "http://localhost:8080"; // Thử localhost trước
+// API Configuration - chỉ dùng API chính
+const API_BASE_URL = "http://192.168.29.231:8080";
 
-console.log("🚀 API Base URL:", API_BASE_URL); // Debug log
+console.log("🚀 API Base URL:", API_BASE_URL);
 
 const apiClient = axios.create({
   baseURL: API_BASE_URL,
@@ -43,7 +43,7 @@ apiClient.interceptors.response.use(
   }
 );
 
-// Login API với debug logging
+// Login API
 export const loginUser = (credentials) => {
   console.log("🔐 Login request to:", `${API_BASE_URL}/auth/login`);
   console.log("📝 Credentials:", { email: credentials.email, password: "***" });
@@ -51,7 +51,7 @@ export const loginUser = (credentials) => {
   return apiClient.post("/auth/login", credentials);
 };
 
-// Register API với debug logging  
+// Register API
 export const registerUser = (userInfo) => {
   console.log("📝 Register request to:", `${API_BASE_URL}/auth/register`);
   console.log("👤 User info:", { ...userInfo, password: "***", confirmPassword: "***" });

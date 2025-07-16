@@ -30,84 +30,65 @@ const Login = () => {
         }
     };
 
-    const validateForm = () => {
-        const newErrors = {};
-
-        if (!formData.email) {
-            newErrors.email = 'Email là bắt buộc';
-        } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-            newErrors.email = 'Email không hợp lệ';
-        }
-
-        if (!formData.password) {
-            newErrors.password = 'Mật khẩu là bắt buộc';
-        } else if (formData.password.length < 6) {
-            newErrors.password = 'Mật khẩu phải có ít nhất 6 ký tự';
-        }
-
-        return newErrors;
-    };
-
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const newErrors = validateForm();
+        console.log("🎯 Form submitted!", formData);
+        
+        // Bỏ validation - luôn submit
+        console.log("🚀 Starting login process...");
+        setIsLoading(true);
+        setErrors({});
+        
+        try {
+            // Gọi API đăng nhập
+            console.log("📞 Calling loginUser API...");
+            const response = await loginUser({
+                email: formData.email,
+                password: formData.password
+            });
 
-        if (Object.keys(newErrors).length === 0) {
-            setIsLoading(true);
-            setErrors({});
+            console.log('✅ Login successful:', response.data);
             
-            try {
-                // Gọi API đăng nhập
-                const response = await loginUser({
-                    email: formData.email,
-                    password: formData.password
-                });
-
-                console.log('Login successful:', response.data);
-                
-                // Lưu token nếu backend trả về
-                if (response.data.token) {
-                    localStorage.setItem('token', response.data.token);
-                    localStorage.setItem('user', JSON.stringify(response.data.user));
-                }
-
-                // Redirect đến trang chủ hoặc dashboard
-                navigate('/');
-                
-            } catch (error) {
-                console.error('Login error:', error);
-                
-                if (error.response?.data?.message) {
-                    // Nếu backend trả về thông báo lỗi
-                    setErrors({ 
-                        general: error.response.data.message 
-                    });
-                } else if (error.response?.status === 401) {
-                    // Unauthorized - thông tin đăng nhập không đúng
-                    setErrors({ 
-                        general: 'Email hoặc mật khẩu không đúng' 
-                    });
-                } else if (error.response?.status === 404) {
-                    // Not found - có thể là endpoint không tồn tại
-                    setErrors({ 
-                        general: 'Không thể kết nối đến server. Vui lòng thử lại sau.' 
-                    });
-                } else if (error.code === 'ECONNREFUSED' || error.code === 'ERR_NETWORK') {
-                    // Network error - server không khả dụng
-                    setErrors({ 
-                        general: 'Không thể kết nối đến server. Vui lòng kiểm tra kết nối mạng.' 
-                    });
-                } else {
-                    // Lỗi khác
-                    setErrors({ 
-                        general: 'Đã xảy ra lỗi. Vui lòng thử lại sau.' 
-                    });
-                }
-            } finally {
-                setIsLoading(false);
+            // Lưu token nếu backend trả về
+            if (response.data.token) {
+                localStorage.setItem('token', response.data.token);
+                localStorage.setItem('user', JSON.stringify(response.data.user));
             }
-        } else {
-            setErrors(newErrors);
+
+            // Redirect đến trang chủ
+            navigate('/');
+            
+        } catch (error) {
+            console.error('❌ Login error:', error);
+            
+            if (error.response?.data?.message) {
+                // Nếu backend trả về thông báo lỗi
+                setErrors({ 
+                    general: error.response.data.message 
+                });
+            } else if (error.response?.status === 401) {
+                // Unauthorized - thông tin đăng nhập không đúng
+                setErrors({ 
+                    general: 'Email hoặc mật khẩu không đúng' 
+                });
+            } else if (error.response?.status === 404) {
+                // Not found - có thể là endpoint không tồn tại
+                setErrors({ 
+                    general: 'Không thể kết nối đến server. Vui lòng thử lại sau.' 
+                });
+            } else if (error.code === 'ECONNREFUSED' || error.code === 'ERR_NETWORK') {
+                // Network error - server không khả dụng
+                setErrors({ 
+                    general: 'Không thể kết nối đến server. Vui lòng kiểm tra kết nối mạng.' 
+                });
+            } else {
+                // Lỗi khác
+                setErrors({ 
+                    general: 'Đã xảy ra lỗi. Vui lòng thử lại sau.' 
+                });
+            }
+        } finally {
+            setIsLoading(false);
         }
     };
 
@@ -178,18 +159,14 @@ const Login = () => {
                                 <input
                                     id="email"
                                     name="email"
-                                    type="email"
+                                    // type="email"
                                     autoComplete="email"
                                     value={formData.email}
                                     onChange={handleChange}
-                                    className={`block w-full pl-10 pr-3 py-3 border ${errors.email ? 'border-red-300' : 'border-gray-600'
-                                        } rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-gray-700 text-white sm:text-sm`}
+                                    className="block w-full pl-10 pr-3 py-3 border border-gray-600 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-gray-700 text-white sm:text-sm"
                                     placeholder="Nhập email của bạn"
                                 />
                             </div>
-                            {errors.email && (
-                                <p className="mt-1 text-sm text-red-600">{errors.email}</p>
-                            )}
                         </div>
 
                         {/* Password Field */}
@@ -208,8 +185,7 @@ const Login = () => {
                                     autoComplete="current-password"
                                     value={formData.password}
                                     onChange={handleChange}
-                                    className={`block w-full pl-10 pr-10 py-3 border ${errors.password ? 'border-red-300' : 'border-gray-600'
-                                        } rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-gray-700 text-white sm:text-sm`}
+                                    className="block w-full pl-10 pr-10 py-3 border border-gray-600 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-gray-700 text-white sm:text-sm"
                                     placeholder="Nhập mật khẩu"
                                 />
                                 <div className="absolute inset-y-0 right-0 pr-3 flex items-center">
@@ -226,9 +202,6 @@ const Login = () => {
                                     </button>
                                 </div>
                             </div>
-                            {errors.password && (
-                                <p className="mt-1 text-sm text-red-600">{errors.password}</p>
-                            )}
                         </div>
                     </div>
 
