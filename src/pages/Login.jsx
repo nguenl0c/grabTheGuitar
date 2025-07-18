@@ -1,18 +1,20 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { IoMdMail, IoIosEye, IoIosEyeOff } from "react-icons/io";
+import { IoIosEye, IoIosEyeOff, IoMdPerson } from "react-icons/io";
 import { IoLockClosed } from "react-icons/io5";
 import whiteLogo from '../assets/2.png';
 import { loginUser } from '../api/authApi';
+import { useAuth } from '../contexts/AuthContext';
 
 const Login = () => {   
     const [formData, setFormData] = useState({
-        email: '',
+        username: '',
         password: ''
     });
     const [showPassword, setShowPassword] = useState(false);
     const [errors, setErrors] = useState({});
     const [isLoading, setIsLoading] = useState(false);
+    const { login } = useAuth(); // Sử dụng hook để lấy hàm login từ AuthContext
     const navigate = useNavigate();
 
     const handleChange = (e) => {
@@ -32,9 +34,7 @@ const Login = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log("🎯 Form submitted!", formData);
-        
-        // Bỏ validation - luôn submit
+        console.log("🎯 Form submitted!", formData);      
         console.log("🚀 Starting login process...");
         setIsLoading(true);
         setErrors({});
@@ -43,20 +43,19 @@ const Login = () => {
             // Gọi API đăng nhập
             console.log("📞 Calling loginUser API...");
             const response = await loginUser({
-                email: formData.email,
+                username: formData.username,
                 password: formData.password
             });
+            const authToken = response.data.token;
 
-            console.log('✅ Login successful:', response.data);
-            
+            console.log('✅ Login successful:', response.data);  
             // Lưu token nếu backend trả về
-            if (response.data.token) {
-                localStorage.setItem('token', response.data.token);
-                localStorage.setItem('user', JSON.stringify(response.data.user));
+            if (authToken) {
+                login(response.data.user || response.data, authToken);
+                navigate('/');
+            } else {
+                navigate('/');
             }
-
-            // Redirect đến trang chủ
-            navigate('/');
             
         } catch (error) {
             console.error('❌ Login error:', error);
@@ -147,24 +146,24 @@ const Login = () => {
                     )}
                     
                     <div className="space-y-4">
-                        {/* Email Field */}
+                        {/* Username Field */}
                         <div>
-                            <label htmlFor="email" className="block text-sm font-medium text-gray-300">
-                                Email
+                            <label htmlFor="username" className="block text-sm font-medium text-gray-300">
+                                Tên đăng nhập
                             </label>
                             <div className="mt-1 relative">
                                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                        <IoMdMail className="h-5 w-5 text-gray-400" />
+                                        <IoMdPerson className="h-5 w-5 text-gray-400" />
                                 </div>
                                 <input
-                                    id="email"
-                                    name="email"
-                                    // type="email"
-                                    autoComplete="email"
-                                    value={formData.email}
+                                    id="username"
+                                    name="username"
+                                    type="text"
+                                    autoComplete="username"
+                                    value={formData.username}
                                     onChange={handleChange}
                                     className="block w-full pl-10 pr-3 py-3 border border-gray-600 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-gray-700 text-white sm:text-sm"
-                                    placeholder="Nhập email của bạn"
+                                    placeholder="Nhập tên đăng nhập của bạn"
                                 />
                             </div>
                         </div>

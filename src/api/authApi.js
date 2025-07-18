@@ -11,16 +11,27 @@ const apiClient = axios.create({
   headers: {
     "Content-Type": "application/json",
   },
-  timeout: 10000, // 10 seconds timeout
+  timeout: 100000, // 10 seconds timeout
 });
 
-// Interceptor để tự động thêm token vào header
+// Interceptor để tự động thêm token vào header (trừ login/register)
 apiClient.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
+    // Chỉ thêm token nếu KHÔNG phải là login/register endpoints
+    const isAuthEndpoint = config.url?.includes('/auth/login') || 
+                          config.url?.includes('/auth/register') ||
+                          config.url?.includes('/auth/test');
+    
+    if (!isAuthEndpoint) {
+      const token = localStorage.getItem('token');
+      if (token) {
+        config.headers.Authorization = `Bearer ${token}`;
+        console.log("🔑 Added token to request:", config.url);
+      }
+    } else {
+      console.log("🚫 No token added for auth endpoint:", config.url);
     }
+    
     return config;
   },
   (error) => {

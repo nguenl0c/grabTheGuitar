@@ -3,7 +3,6 @@ import { Link, useNavigate } from 'react-router-dom';
 import { IoMdMail, IoIosEye, IoIosEyeOff } from "react-icons/io";
 import { IoLockClosed } from "react-icons/io5";
 import { User, Phone } from 'lucide-react';
-import xbox from '../assets/xbox.jpg';
 import whiteLogo from '../assets/2.png';
 import { registerUser } from '../api/authApi';
 
@@ -168,15 +167,11 @@ const Register = () => {
     <div className="min-h-screen flex bg-[#2f3238]">
       {/* Left side - Register Form (40%) */}
       <div className="w-full lg:w-3/7 flex items-center justify-center p-8 relative">
-        {/* Logo positioned at top-left */}
-        <div className="absolute top-6 left-6">
-          <img src={whiteLogo} alt="Logo" className="h-10" />
-        </div>
         
         <div className="max-w-md w-full space-y-8">
           <div>
             <div className="lg:hidden mx-auto h-12 w-12 flex items-center justify-center rounded-full bg-indigo-600 mb-8">
-              <span className="text-white font-bold text-xl">G</span>
+              <img src={whiteLogo} alt="" />
             </div>
             <h2 className="text-left text-3xl font-bold text-gray-200 font-tiktok">
               Tạo tài khoản
@@ -443,66 +438,14 @@ const Register = () => {
         {/* Background Image */}
         <div className="absolute inset-0">
           <img 
-            src={xbox} 
+            src={whiteLogo} 
             alt="Guitar Background" 
             className="w-full h-full object-cover opacity-60"
           />
         </div>
 
         {/* Content Overlay */}
-        <div className="relative z-10 flex flex-col justify-center items-center text-white p-12 w-full">
-          <div className="max-w-lg text-center">
-            <div className="mb-8">
-              <div className="h-16 w-16 bg-white bg-opacity-20 rounded-full flex items-center justify-center mx-auto mb-4 backdrop-blur-sm">
-                <span className="text-white font-bold text-2xl">G</span>
-              </div>
-              <h1 className="text-4xl font-extrabold mb-4 font-tiktok">
-                Chào mừng bạn!
-              </h1>
-              <p className="text-xl text-white mb-8 font-source">
-                Gia nhập cộng đồng yêu âm nhạc và khám phá thế giới guitar cùng chúng tôi
-              </p>
-            </div>
-            
-            <div className="grid grid-cols-1 gap-4 text-left">
-              <div className="flex items-start space-x-3 bg-white/10 backdrop-blur-sm rounded-lg p-3">
-                <div className="flex-shrink-0">
-                  <div className="h-6 w-6 bg-white bg-opacity-30 rounded-full flex items-center justify-center">
-                    <span className="text-xs">🎯</span>
-                  </div>
-                </div>
-                <div>
-                  <h3 className="font-semibold text-sm font-inter">Tài khoản miễn phí</h3>
-                  <p className="text-white/90 text-xs font-source">Tạo tài khoản và nhận ưu đãi đặc biệt</p>
-                </div>
-              </div>
-              
-              <div className="flex items-start space-x-3 bg-white/10 backdrop-blur-sm rounded-lg p-3">
-                <div className="flex-shrink-0">
-                  <div className="h-6 w-6 bg-white bg-opacity-30 rounded-full flex items-center justify-center">
-                    <span className="text-xs">💝</span>
-                  </div>
-                </div>
-                <div>
-                  <h3 className="font-semibold text-sm font-inter">Ưu đãi thành viên</h3>
-                  <p className="text-white/90 text-xs font-source">Giảm giá đến 20% cho đơn hàng đầu tiên</p>
-                </div>
-              </div>
-              
-              <div className="flex items-start space-x-3 bg-white/10 backdrop-blur-sm rounded-lg p-3">
-                <div className="flex-shrink-0">
-                  <div className="h-6 w-6 bg-white bg-opacity-30 rounded-full flex items-center justify-center">
-                    <span className="text-xs">🔔</span>
-                  </div>
-                </div>
-                <div>
-                  <h3 className="font-semibold text-sm font-inter">Thông báo sớm</h3>
-                  <p className="text-white/90 text-xs font-source">Nhận thông tin sản phẩm mới nhất</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+    
 
         {/* Decorative elements */}
         <div className="absolute top-0 left-0 w-40 h-40 bg-white bg-opacity-10 rounded-full -translate-y-20 -translate-x-20"></div>

@@ -7,11 +7,106 @@ import {
   Heart,
   Filter,
   Grid,
-  List
+  List,
+  ChevronLeft,
+  ChevronRight
 } from 'lucide-react';
 
 const Home = () => {
   const [viewMode, setViewMode] = useState('grid');
+  const [currentBannerIndex, setCurrentBannerIndex] = useState(0);
+
+  // Banner data - 9 banners total
+  const banners = [
+    {
+      id: 1,
+      title: 'Guitar Acoustic Premium',
+      subtitle: 'Âm thanh trong trẻo, chất lượng vượt trội',
+      image: '/api/placeholder/400/200',
+      buttonText: 'Khám phá ngay',
+      bgColor: 'from-blue-600 to-purple-600'
+    },
+    {
+      id: 2,
+      title: 'Guitar Electric Pro',
+      subtitle: 'Sức mạnh âm thanh điện tử',
+      image: '/api/placeholder/400/200',
+      buttonText: 'Xem collection',
+      bgColor: 'from-red-600 to-orange-600'
+    },
+    {
+      id: 3,
+      title: 'Guitar Classical Deluxe',
+      subtitle: 'Nghệ thuật cổ điển tinh tế',
+      image: '/api/placeholder/400/200',
+      buttonText: 'Tìm hiểu thêm',
+      bgColor: 'from-green-600 to-teal-600'
+    },
+    {
+      id: 4,
+      title: 'Bass Guitar Master',
+      subtitle: 'Nhịp điệu mạnh mẽ, bass sâu lắng',
+      image: '/api/placeholder/400/200',
+      buttonText: 'Mua ngay',
+      bgColor: 'from-purple-600 to-pink-600'
+    },
+    {
+      id: 5,
+      title: 'Amplifier Series',
+      subtitle: 'Khuếch đại âm thanh hoàn hảo',
+      image: '/api/placeholder/400/200',
+      buttonText: 'Xem chi tiết',
+      bgColor: 'from-indigo-600 to-blue-600'
+    },
+    {
+      id: 6,
+      title: 'Accessories Pro',
+      subtitle: 'Phụ kiện chuyên nghiệp cho guitarist',
+      image: '/api/placeholder/400/200',
+      buttonText: 'Mua sắm',
+      bgColor: 'from-yellow-600 to-orange-600'
+    },
+    {
+      id: 7,
+      title: 'Vintage Collection',
+      subtitle: 'Bộ sưu tập guitar cổ điển',
+      image: '/api/placeholder/400/200',
+      buttonText: 'Khám phá',
+      bgColor: 'from-gray-600 to-gray-800'
+    },
+    {
+      id: 8,
+      title: 'Limited Edition',
+      subtitle: 'Phiên bản giới hạn độc quyền',
+      image: '/api/placeholder/400/200',
+      buttonText: 'Đặt trước',
+      bgColor: 'from-rose-600 to-pink-600'
+    },
+    {
+      id: 9,
+      title: 'Student Series',
+      subtitle: 'Lựa chọn hoàn hảo cho người mới bắt đầu',
+      image: '/api/placeholder/400/200',
+      buttonText: 'Bắt đầu',
+      bgColor: 'from-emerald-600 to-green-600'
+    }
+  ];
+
+  const nextBanner = () => {
+    setCurrentBannerIndex((prev) => (prev + 3) % banners.length);
+  };
+
+  const prevBanner = () => {
+    setCurrentBannerIndex((prev) => (prev - 3 + banners.length) % banners.length);
+  };
+
+  const getCurrentBanners = () => {
+    const current = [];
+    for (let i = 0; i < 3; i++) {
+      current.push(banners[(currentBannerIndex + i) % banners.length]);
+    }
+    return current;
+  };
 
   // Sample data - trong thực tế sẽ fetch từ API
   const featuredProducts = [
@@ -81,20 +176,63 @@ const Home = () => {
     <div className="min-h-screen bg-gray-50">
       <Header />
 
-      {/* Hero Section */}
-      <section className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
-          <div className="text-center">
-            <h1 className="text-4xl font-extrabold sm:text-5xl md:text-6xl">
-              Cửa hàng Guitar hàng đầu
-            </h1>
-            <p className="mt-3 max-w-md mx-auto text-base sm:text-lg md:mt-5 md:text-xl md:max-w-3xl">
-              Khám phá bộ sưu tập guitar chất lượng cao từ các thương hiệu nổi tiếng thế giới
-            </p>
-            <div className="mt-5 max-w-md mx-auto sm:flex sm:justify-center md:mt-8">
-              <button className="w-full sm:w-auto bg-white text-indigo-600 hover:bg-gray-50 px-8 py-3 border border-transparent text-base font-medium rounded-md md:py-4 md:text-lg md:px-10">
-                Khám phá ngay
-              </button>
+      {/* Hero Section - Banner Carousel */}
+      <section className="relative py-20 overflow-hidden">
+        <div className="container mx-auto px-4">
+          <div className="relative">
+            {/* Navigation Buttons */}
+            <button
+              onClick={prevBanner}
+              className="absolute left-0 top-1/2 transform -translate-y-1/2 z-10 bg-white/20 backdrop-blur-sm rounded-full p-2 hover:bg-white/30 transition-colors"
+            >
+              <ChevronLeft className="w-6 h-6 text-white" />
+            </button>
+            <button
+              onClick={nextBanner}
+              className="absolute right-0 top-1/2 transform -translate-y-1/2 z-10 bg-white/20 backdrop-blur-sm rounded-full p-2 hover:bg-white/30 transition-colors"
+            >
+              <ChevronRight className="w-6 h-6 text-white" />
+            </button>
+
+            {/* Banner Grid - 3 banners visible */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {getCurrentBanners().map((banner) => (
+                <div
+                  key={banner.id}
+                  className={`relative rounded-2xl overflow-hidden bg-gradient-to-br ${banner.bgColor} p-8 text-white min-h-[300px] flex flex-col justify-between`}
+                >
+                  <div>
+                    <h2 className="text-2xl font-bold mb-2">{banner.title}</h2>
+                    <p className="text-white/90 mb-6">{banner.subtitle}</p>
+                  </div>
+                  
+                  <div className="flex justify-between items-end">
+                    <button className="bg-white/20 backdrop-blur-sm px-6 py-2 rounded-lg hover:bg-white/30 transition-colors">
+                      {banner.buttonText}
+                    </button>
+                    <div className="w-16 h-16 bg-white/10 rounded-lg"></div>
+                  </div>
+                  
+                  {/* Decorative elements */}
+                  <div className="absolute top-4 right-4 w-8 h-8 bg-white/10 rounded-full"></div>
+                  <div className="absolute bottom-4 right-20 w-4 h-4 bg-white/20 rounded-full"></div>
+                </div>
+              ))}
+            </div>
+
+            {/* Banner indicators */}
+            <div className="flex justify-center mt-8 space-x-2">
+              {Array.from({ length: Math.ceil(banners.length / 3) }).map((_, index) => (
+                <button
+                  key={index}
+                  onClick={() => setCurrentBannerIndex(index * 3)}
+                  className={`w-3 h-3 rounded-full transition-colors ${
+                    Math.floor(currentBannerIndex / 3) === index
+                      ? 'bg-blue-600'
+                      : 'bg-gray-300'
+                  }`}
+                />
+              ))}
             </div>
           </div>
         </div>
